@@ -5,7 +5,7 @@ const { useState: useStateS, useEffect: useEffectS, useRef: useRefS } = React;
 // ════════════════════════════════════════════════════════════════
 // NAV — pill style
 // ════════════════════════════════════════════════════════════════
-function Nav({ showPricing }) {
+function Nav({ showPricing, dark, onToggleDark }) {
   return (
     <header className="v-nav">
       <div className="v-nav-inner">
@@ -21,6 +21,26 @@ function Nav({ showPricing }) {
           <a href="#contact">Contact</a>
         </nav>
         <div className="v-nav-cta">
+          <button
+            type="button"
+            className="v-nav-mode"
+            onClick={onToggleDark}
+            aria-label={dark ? "Switch to light mode" : "Switch to dark mode"}
+            title={dark ? "Switch to light mode" : "Switch to dark mode"}
+          >
+            {dark ? (
+              /* sun */
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <circle cx="12" cy="12" r="4" />
+                <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" />
+              </svg>
+            ) : (
+              /* moon */
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+              </svg>
+            )}
+          </button>
           <Button href="#demo" variant="primary" size="sm">Request demo</Button>
         </div>
       </div>
@@ -661,6 +681,22 @@ function DemoSection() {
   const set = (k) => (e) => setForm((f) => ({ ...f, [k]: e.target.value }));
   function submit(e) {
     e.preventDefault();
+    const lines = [
+      `Name: ${form.name}`,
+      `Email: ${form.email}`,
+      form.phone && `Phone: ${form.phone}`,
+      `Organization: ${form.org}`,
+      form.role && `Role: ${form.role}`,
+      form.institution && `Institution type: ${form.institution}`,
+      form.size && `Size / # of zones: ${form.size}`,
+      form.timeline && `Timeline: ${form.timeline}`,
+      "",
+      form.message && "Specific needs / questions:",
+      form.message
+    ].filter(Boolean).join("\n");
+    const subject = `Verdis demo request — ${form.org || form.name || "new inquiry"}`;
+    const mailto = `mailto:gergely.motolai@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(lines)}`;
+    window.location.href = mailto;
     setSubmitted(true);
   }
 
@@ -688,12 +724,12 @@ function DemoSection() {
           <form className="v-form" onSubmit={submit}>
             {submitted ?
             <div className="v-form-done">
-                <Pill mono>STATUS · RECEIVED</Pill>
-                <h3 className="v-form-done-h">Got it — <em>talk soon.</em></h3>
+                <Pill mono>STATUS · EMAIL OPENED</Pill>
+                <h3 className="v-form-done-h">Almost there — <em>hit send.</em></h3>
                 <p>
-                  Your request has been logged. Gergely will reach out within one
-                  business day to schedule the walkthrough. In the meantime, feel
-                  free to email directly.
+                  Your email app should have just opened with your details pre-filled.
+                  Hit send and Gergely will reply within one business day. If nothing
+                  popped up, you can email him directly at the address below.
                 </p>
                 <Button href="#contact" variant="ghost" size="md">See contact info</Button>
               </div> :
@@ -719,7 +755,7 @@ function DemoSection() {
                 <Field label="Specific needs / questions" value={form.message} onChange={set("message")} textarea />
                 <div className="v-form-foot">
                   <span className="v-form-fine">By submitting, you agree to be contacted about Verdis.</span>
-                  <Button type="submit" variant="primary" size="lg">Send request</Button>
+                  <Button type="submit" variant="primary" size="lg">Open in email</Button>
                 </div>
               </React.Fragment>
             }
@@ -776,9 +812,8 @@ function ContactSection() {
                 <div className="v-contact-role">Founder · Engineer</div>
               </div>
               <div className="v-contact-rows">
-                <SpecRow k="Email" v="[ contact info — add later ]" />
-                <SpecRow k="Phone" v="[ contact info — add later ]" />
-                <SpecRow k="Location" v="[ contact info — add later ]" />
+                <SpecRow k="Email" v="gergely.motolai@gmail.com" href="mailto:gergely.motolai@gmail.com?subject=Verdis%20inquiry" />
+                <SpecRow k="Phone" v="+1 (913) 325-9753" href="tel:+19133259753" />
                 <SpecRow k="Response" v="Within 1 business day" />
               </div>
               <Button href="#demo" variant="primary" size="md">Request a demo</Button>

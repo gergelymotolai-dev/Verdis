@@ -98,12 +98,14 @@ function Metric({ value, label, suffix }) {
 }
 
 // ─── Spec row ────────────────────────────────────────────────────
-function SpecRow({ k, v }) {
+function SpecRow({ k, v, href }) {
   return (
     <div className="v-spec">
       <span className="v-spec-k">{k}</span>
       <span className="v-spec-dots" />
-      <span className="v-spec-v">{v}</span>
+      <span className="v-spec-v">
+        {href ? <a href={href} className="v-spec-link">{v}</a> : v}
+      </span>
     </div>
   );
 }

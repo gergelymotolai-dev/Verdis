@@ -140,7 +140,7 @@ function App() {
 
   return (
     <div className="v-root">
-      <Nav showPricing={t.showPricing} />
+      <Nav showPricing={t.showPricing} dark={t.dark} onToggleDark={() => setTweak("dark", !t.dark)} />
       <main>
         <Hero audienceEmphasis={t.audience} />
         <TrustStrip />
